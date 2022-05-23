@@ -16,6 +16,10 @@ contract Wallet {
     event EtherSent(address indexed _to, uint _amount);
     event EtherRecieved(address indexed _sender, uint amount);
 
+    event TokenApproved(address indexed _tokenAddress, address indexed _spender, uint _amount);
+
+    event FeeChanged(uint8 _fee);
+
 
     constructor(){
         owner = msg.sender;
@@ -94,6 +98,8 @@ contract Wallet {
         bool result = _token.approve(_spender, _amount);
         require(result == true, "Approve token failed");
 
+        emit TokenApproved(_tokenAddress, _spender, _amount);
+
         return result;
     }
 
@@ -101,6 +107,9 @@ contract Wallet {
     function setFee(uint8 _fee) public onlyOwner returns(bool) {
         require(_fee > 0 && _fee < 100, "Fee must be greater than 0 and less than 100");
         fee = _fee;
+
+        emit FeeChanged(_fee);
+
         return true;
     }
 }
